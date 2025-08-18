@@ -10,7 +10,11 @@ import Editor from './Artist/Editor';
 
 import Navbar from './Artist/Navbar';
 
+import SonMeme from './Artist/SonMeme';
+
+
 import theme from "./Theme";
+import { Import } from 'lucide-react';
 
 function App() {
   return (
@@ -23,6 +27,7 @@ function App() {
           <Route path="/" element={<SonUpload />} />
           <Route path="/about-son-pfp" element={<AboutSon/>} />
             <Route path="/editor" element={<Editor />} />
+             <Route path="/son-memes" element={<SonMeme />} />
           <Route path="/submission" element={<ArtistSubmission />} />
           {/* Add more routes as needed */}
         </Routes>

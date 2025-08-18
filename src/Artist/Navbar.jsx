@@ -58,6 +58,7 @@ function Navbar() {
              {[
   { text: "UPLOAD", link: "./" },
   { text: "What is Son PFP ?", link: "./about-son-pfp" },
+  { text: "Son Meme", link: "./son-memes" },
   { text: "Love you Son", link: "https://son.meme/" },
   { text: "BUY $Son", link: "https://dexscreener.com/solana/gxqaxqzxmm7hmpqlrtbcm9tztukj2m4uatvqnqj1oznf" }
 ].map((item, i) => (
