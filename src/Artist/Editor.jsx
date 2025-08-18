@@ -469,6 +469,9 @@ export default function Editor({ image, onBack }) {
 
        
       </aside>
+
+
+      <br/>   <br/>   <br/>   <br/>   <br/>
     </div>
   );
 }
