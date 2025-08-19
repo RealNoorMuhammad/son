@@ -1,8 +1,15 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { motion } from "framer-motion";
 import "./MusicPlayer.css";
-import son from './son.mp3'
-const MusicPlayer = () => {
+import son from "./son.mp3";
+
+const MusicPlayer = forwardRef(({ stopAllVideos }, ref) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState("00:00");
   const [isMinimized, setIsMinimized] = useState(false);
@@ -10,25 +17,51 @@ const MusicPlayer = () => {
 
   const audioRef = useRef(null);
 
+  // Toggle play/pause
   const togglePlayPause = () => {
     if (!audioRef.current) return;
 
     if (isPlaying) {
       audioRef.current.pause();
+      setIsPlaying(false);
     } else {
-      audioRef.current.play().catch((err) => {
-        console.log("Autoplay blocked:", err);
-      });
+      audioRef.current
+        .play()
+        .then(() => {
+          // ✅ When music starts, stop all videos
+          if (stopAllVideos) stopAllVideos();
+          setIsPlaying(true);
+        })
+        .catch((err) => {
+          console.log("Autoplay blocked:", err);
+        });
     }
-    setIsPlaying(!isPlaying);
   };
 
-  // format mm:ss
+  // Expose functions to parent (pause/resume)
+  useImperativeHandle(ref, () => ({
+    pauseMusic() {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      }
+    },
+    resumeMusic() {
+      if (audioRef.current) {
+        audioRef.current.play().catch(() => {});
+        setIsPlaying(true);
+      }
+    },
+  }));
+
+  // Format mm:ss
   const formatTime = (time) => {
     if (!time || isNaN(time)) return "00:00";
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    return `${minutes < 10 ? "0" : ""}${minutes}:${
+      seconds < 10 ? "0" : ""
+    }${seconds}`;
   };
 
   useEffect(() => {
@@ -52,16 +85,13 @@ const MusicPlayer = () => {
 
   return (
     <>
-      {/* One <audio> works for both desktop & mobile */}
       <audio ref={audioRef} src={son}></audio>
 
       {isMobile ? (
-        // --- MOBILE: Just Son Music button ---
         <button className="mobile-music-btn" onClick={togglePlayPause}>
           🎵 Son Music {isPlaying ? "⏸" : "▶"}
         </button>
       ) : (
-        // --- DESKTOP: Full Player with animation ---
         <motion.div
           className="music-player"
           onClick={() => setIsMinimized(!isMinimized)}
@@ -76,7 +106,6 @@ const MusicPlayer = () => {
             <div className="minimized">🎵 Son Music</div>
           ) : (
             <>
-              {/* Screen */}
               <div className="screen">
                 <div className="top-bar">
                   <span>{currentTime}</span>
@@ -98,13 +127,12 @@ const MusicPlayer = () => {
                 </div>
               </div>
 
-              {/* Circle control */}
               <div className="controls">
                 <div className="circle">
                   <button
                     className="center-btn"
                     onClick={(e) => {
-                      e.stopPropagation(); // don’t trigger minimize
+                      e.stopPropagation();
                       togglePlayPause();
                     }}
                   >
@@ -119,6 +147,6 @@ const MusicPlayer = () => {
       )}
     </>
   );
-};
+});
 
 export default MusicPlayer;
