@@ -1,6 +1,12 @@
+@font-face {
+  font-family: "Comici";   /* Name you will use in CSS */
+  src: url("./Fonts/comici.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
 
-*{
-    font-family: "Comic Sans MS", cursive, sans-serif !important;
+* {
+  font-family: "Comici", sans-serif !important;
 }
 
 /* ---------- Global ---------- */
